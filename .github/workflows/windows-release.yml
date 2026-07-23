@@ -15,17 +15,21 @@ on:
       - '.github/workflows/windows-release.yml'
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened, closed]
+  schedule:
+    - cron: '17 9 * * 1'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: cinavault-reimagined-${{ github.ref }}
+  group: cinavault-reimagined-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   validate-build-release:
+    if: github.event_name != 'pull_request' || github.event.action != 'closed' || github.event.pull_request.merged == true
     name: Validate, package, and publish Windows release
     runs-on: windows-latest
     timeout-minutes: 90
@@ -33,6 +37,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merge_commit_sha || github.sha }}
 
       - name: Prepare diagnostics directory
         shell: pwsh
@@ -122,11 +128,11 @@ jobs:
           retention-days: 30
 
       - name: Publish CinaVault ReImagined v0.0.1 prerelease
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true)
         uses: softprops/action-gh-release@v2
         with:
           tag_name: cinavault-reimagined-v0.0.1
-          target_commitish: ${{ github.sha }}
+          target_commitish: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merge_commit_sha || github.sha }}
           name: CinaVault ReImagined v0.0.1
           body_path: test-results/BUILD_NOTES.md
           draft: false

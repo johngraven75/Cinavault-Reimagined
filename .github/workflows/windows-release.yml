@@ -146,25 +146,23 @@ jobs:
           )
 
           gh release view $tag --repo $repo 1>$null 2>$null
-          $releaseExists = $LASTEXITCODE -eq 0
-          if ($releaseExists) {
-            gh release edit $tag --repo $repo --title 'CinaVault ReImagined v0.0.1' --notes-file 'test-results/BUILD_NOTES.md' --prerelease --target $env:TARGET_SHA
-            if ($LASTEXITCODE -ne 0) { throw 'Failed to update the GitHub prerelease metadata.' }
+          if ($LASTEXITCODE -eq 0) {
+            gh release delete $tag --repo $repo --cleanup-tag --yes
+            if ($LASTEXITCODE -ne 0) { throw 'Failed to remove the partial prerelease.' }
           } else {
-            gh release create $tag --repo $repo --target $env:TARGET_SHA --title 'CinaVault ReImagined v0.0.1' --notes-file 'test-results/BUILD_NOTES.md' --prerelease
-            if ($LASTEXITCODE -ne 0) { throw 'Failed to create the GitHub prerelease.' }
+            gh api --method DELETE "repos/$repo/git/refs/tags/$tag" 1>$null 2>$null
           }
 
-          foreach ($asset in $assets) {
-            gh release upload $tag $asset --repo $repo --clobber
-            if ($LASTEXITCODE -ne 0) { throw "Failed to upload release asset: $asset" }
-          }
+          gh release create $tag @assets --repo $repo --target $env:TARGET_SHA --title 'CinaVault ReImagined v0.0.1' --notes-file 'test-results/BUILD_NOTES.md' --prerelease --latest=false
+          if ($LASTEXITCODE -ne 0) { throw 'Failed to create the GitHub prerelease with required assets.' }
 
-          $verification = gh release view $tag --repo $repo --json url,tagName,isPrerelease,assets
+          $verification = gh release view $tag --repo $repo --json url,tagName,isPrerelease,targetCommitish,assets
           if ($LASTEXITCODE -ne 0) { throw 'Failed to verify the GitHub prerelease.' }
           $verification | Set-Content test-results/release-verification.json -Encoding utf8
 
           $release = $verification | ConvertFrom-Json
+          if (-not $release.isPrerelease) { throw 'Published release is not marked as a prerelease.' }
+          if ($release.targetCommitish -ne $env:TARGET_SHA) { throw "Published release target does not match $env:TARGET_SHA." }
           $assetNames = @($release.assets | ForEach-Object { $_.name })
           $requiredPatterns = @('*.msi', '*.exe', 'BUILD_NOTES.md', 'installer-verification.txt')
           foreach ($pattern in $requiredPatterns) {

@@ -1,0 +1,11 @@
+import { mkdir, writeFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+
+const iconBase64 = 'AAABAAEAEBAAAAAAIABbAwAAFgAAAIlQTkcNChoKAAAADUlIRFIAAAAQAAAAEAgGAAAAH/P/YQAAAyJJREFUeJwtzE1PI2UAwPH/zDztdKadThnoC6/KsuiCiIkm6mWNxP0MetE96acxevXqwcTEs4lRiTEx6mZ1NWphF1hgoZSWFpi+TGnn5ZnHg36A30/79E1NKU0jURApCJUi0rOMNJehXmKolRgoi0Cz6akcV8qkl5qkMoVEIhanNCT/4UjBRGncaDlMzUYYDrpWAgqkymasWejKRskMxCnECWLOA6kgSv8PNMFId8hRJKOXEGIG0gJjaWEYDhIbmegYkSKNJWKmCirViCXECmLDoa8VcUQZL7dIM3FRskiQOoyEiyPyXEsDGSpQOsIpK5RUpMog0fMEcgrHrvF06PHFt7/RHFm8/+FHDEeKQBVYdj0cYSGTCaOdOiIzX0VPJZMoQz7jQVzin/MMH3zyNf1gTOXOe+yeJNSet7FdF9lv8c1Px2ytunz3+8+Im8oW9b0Wrm0SD1NefWGJ3b9OeWNzlbffusdACiq3CmjTZRqjhN5VD7N3wuHxLKdxAW378/tq+4d93r23zvf1NuEEZssVDMOiOrfMr/VjokKVo/Mrji4GuJ5H4+iA47QElTV077KBCIZ8/NkvPK53qTpFjk58Hux22W+HFBc22Ht2AZksK7Uih0/2OLwIWaxWuLtaQvz9LGZj/UXG5hglJXuNiEKpwvrKAoNIx/cvuZ5ksa0iUd5kfLtIdTwm131Kf9xBfPnIJ3Vc3lmfodO9xhCCRl9je+cAFbUYJylRpoBEUZQOm2rA7HKV80DRaLcQtmXT8Lt89eMZMueyXMsyX9OZ9jwePGqR3DSpLc0x45jooc/FQZ1hd5ZolGDpKaIXgpUVXMUpN90zHgYprxXnMfMTtu7e4Sa8TcEtYAqJ3+sziVOCzhm54hQXQYIoT5eIlUE2GzIgYuP1V9BEhod/7FDOhvy53yHSLJZmPTbXVlh47hbR1WOu/EPCfozottqc+ROMXIFJqPFkZ5ecUMxZKfunPtOeg54rcN7psfZSlk7f57oZoMKAOAjR1tdeVo4Jrcsep+0xJBH2TAXbFAjTxMvrnLe7VJdWCSYhcwsVms1LBr4PKuVfLPWKnpbyYEIAAAAASUVORK5CYII=';
+
+const iconDirectory = resolve('src-tauri', 'icons');
+const iconPath = resolve(iconDirectory, 'icon.ico');
+
+await mkdir(iconDirectory, { recursive: true });
+await writeFile(iconPath, Buffer.from(iconBase64, 'base64'));
+console.log(`Prepared ${iconPath}`);

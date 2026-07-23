@@ -19,3 +19,5 @@ Initial standalone architectural and visual foundation release.
 This is a foundation prerelease. The shell, architecture, visual system, feature registry, release gates, and packaging pipeline are present. Media engines and service providers will be migrated incrementally from CinaVault Premium and tracked explicitly in the parity contract.
 
 Release pipeline retriggered after publication handling was hardened.
+
+Release publication revalidated after the missing-prerelease probe fix.

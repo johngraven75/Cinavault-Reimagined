@@ -11,8 +11,11 @@
     "typecheck": "tsc --noEmit",
     "test": "node --test tests/*.test.mjs",
     "validate": "npm run test && npm run typecheck && npm run build",
+    "prepare:icon": "node scripts/prepare-icon.mjs",
     "tauri": "tauri",
+    "predesktop:dev": "npm run prepare:icon",
     "desktop:dev": "tauri dev",
+    "predesktop:build": "npm run prepare:icon",
     "desktop:build": "tauri build"
   },
   "dependencies": {

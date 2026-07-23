@@ -3,6 +3,23 @@
   "private": true,
   "version": "0.0.1",
   "description": "CinaVault ReImagined — fast, fluid, cloud-ready Windows media experience",
+  "license": "GPL-3.0-only",
+  "homepage": "https://github.com/johngraven75/Cinavault-ReImagined#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johngraven75/Cinavault-ReImagined.git"
+  },
+  "bugs": {
+    "url": "https://github.com/johngraven75/Cinavault-ReImagined/issues"
+  },
+  "keywords": [
+    "cinavault",
+    "tauri",
+    "react",
+    "rust",
+    "windows",
+    "media-center"
+  ],
   "type": "module",
   "scripts": {
     "dev": "vite",

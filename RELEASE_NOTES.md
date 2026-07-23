@@ -21,3 +21,5 @@ This is a foundation prerelease. The shell, architecture, visual system, feature
 Release pipeline retriggered after publication handling was hardened.
 
 Release publication revalidated after the missing-prerelease probe fix.
+
+Merged-PR release trigger revalidated after automated push events failed to start a new run.

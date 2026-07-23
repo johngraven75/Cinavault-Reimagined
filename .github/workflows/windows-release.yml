@@ -129,20 +129,31 @@ jobs:
 
       - name: Publish CinaVault ReImagined v0.0.1 prerelease
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true)
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: cinavault-reimagined-v0.0.1
-          target_commitish: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merge_commit_sha || github.sha }}
-          name: CinaVault ReImagined v0.0.1
-          body_path: test-results/BUILD_NOTES.md
-          draft: false
-          prerelease: true
-          fail_on_unmatched_files: true
-          files: |
-            src-tauri/target/release/bundle/msi/*.msi
-            src-tauri/target/release/bundle/nsis/*.exe
-            test-results/BUILD_NOTES.md
-            test-results/installer-verification.txt
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_SHA: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merge_commit_sha || github.sha }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $tag = 'cinavault-reimagined-v0.0.1'
+          $assets = @()
+          $assets += @(Get-ChildItem 'src-tauri/target/release/bundle/msi/*.msi').FullName
+          $assets += @(Get-ChildItem 'src-tauri/target/release/bundle/nsis/*.exe').FullName
+          $assets += (Resolve-Path 'test-results/BUILD_NOTES.md').Path
+          $assets += (Resolve-Path 'test-results/installer-verification.txt').Path
+
+          gh release view $tag --repo $env:GITHUB_REPOSITORY *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $tag @assets --repo $env:GITHUB_REPOSITORY --clobber
+            if ($LASTEXITCODE -ne 0) { throw 'Failed to upload release assets.' }
+            gh release edit $tag --repo $env:GITHUB_REPOSITORY --title 'CinaVault ReImagined v0.0.1' --notes-file 'test-results/BUILD_NOTES.md' --prerelease --target $env:TARGET_SHA
+            if ($LASTEXITCODE -ne 0) { throw 'Failed to update the GitHub prerelease.' }
+          } else {
+            gh release create $tag @assets --repo $env:GITHUB_REPOSITORY --target $env:TARGET_SHA --title 'CinaVault ReImagined v0.0.1' --notes-file 'test-results/BUILD_NOTES.md' --prerelease
+            if ($LASTEXITCODE -ne 0) { throw 'Failed to create the GitHub prerelease.' }
+          }
+
+          gh release view $tag --repo $env:GITHUB_REPOSITORY --json url,tagName,isPrerelease,assets | Set-Content test-results/release-verification.json -Encoding utf8
 
       - name: Upload diagnostics
         if: always()

@@ -3,16 +3,6 @@ name: Windows Build and Release
 on:
   push:
     branches: [main]
-    paths:
-      - 'src/**'
-      - 'tests/**'
-      - 'scripts/**'
-      - 'src-tauri/**'
-      - 'package.json'
-      - 'tsconfig.json'
-      - 'vite.config.ts'
-      - 'RELEASE_NOTES.md'
-      - '.github/workflows/windows-release.yml'
   pull_request:
     branches: [main]
     types: [opened, synchronize, reopened, closed]

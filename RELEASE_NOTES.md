@@ -25,3 +25,5 @@ Release publication revalidated after the missing-prerelease probe fix.
 Merged-PR release trigger revalidated after automated push events failed to start a new run.
 
 Atomic prerelease publication retriggered after final publisher hardening.
+
+Immutable prerelease tag publication retriggered after explicit tag creation was added.

@@ -148,12 +148,15 @@ jobs:
           gh release view $tag --repo $repo 1>$null 2>$null
           if ($LASTEXITCODE -eq 0) {
             gh release delete $tag --repo $repo --cleanup-tag --yes
-            if ($LASTEXITCODE -ne 0) { throw 'Failed to remove the partial prerelease.' }
+            if ($LASTEXITCODE -ne 0) { throw 'Failed to remove the existing prerelease.' }
           } else {
             gh api --method DELETE "repos/$repo/git/refs/tags/$tag" 1>$null 2>$null
           }
 
-          gh release create $tag @assets --repo $repo --target $env:TARGET_SHA --title 'CinaVault ReImagined v0.0.1' --notes-file 'test-results/BUILD_NOTES.md' --prerelease --latest=false
+          gh api --method POST "repos/$repo/git/refs" -f ref="refs/tags/$tag" -f sha="$env:TARGET_SHA"
+          if ($LASTEXITCODE -ne 0) { throw "Failed to create release tag $tag at $env:TARGET_SHA." }
+
+          gh release create $tag @assets --repo $repo --verify-tag --title 'CinaVault ReImagined v0.0.1' --notes-file 'test-results/BUILD_NOTES.md' --prerelease --latest=false
           if ($LASTEXITCODE -ne 0) { throw 'Failed to create the GitHub prerelease with required assets.' }
 
           $verification = gh release view $tag --repo $repo --json url,tagName,isPrerelease,targetCommitish,assets
@@ -162,7 +165,7 @@ jobs:
 
           $release = $verification | ConvertFrom-Json
           if (-not $release.isPrerelease) { throw 'Published release is not marked as a prerelease.' }
-          if ($release.targetCommitish -ne $env:TARGET_SHA) { throw "Published release target does not match $env:TARGET_SHA." }
+          if ($release.tagName -ne $tag) { throw "Published release tag does not match $tag." }
           $assetNames = @($release.assets | ForEach-Object { $_.name })
           $requiredPatterns = @('*.msi', '*.exe', 'BUILD_NOTES.md', 'installer-verification.txt')
           foreach ($pattern in $requiredPatterns) {

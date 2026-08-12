@@ -76,6 +76,27 @@ jobs:
         shell: pwsh
         run: npm run prepare:icon 2>&1 | Tee-Object -FilePath test-results/icon-preparation.log
 
+      - name: Ensure a reproducible Rust dependency lock
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (-not (Test-Path 'src-tauri/Cargo.lock')) {
+            cargo generate-lockfile --manifest-path src-tauri/Cargo.toml
+            if ($LASTEXITCODE -ne 0) { throw 'Rust dependency lock generation failed.' }
+          }
+
+          if ('${{ github.event_name }}' -eq 'push' -and '${{ github.ref }}' -eq 'refs/heads/main') {
+            git add src-tauri/Cargo.lock
+            git diff --cached --quiet
+            if ($LASTEXITCODE -ne 0) {
+              git config user.name 'github-actions[bot]'
+              git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+              git commit -m 'chore: lock Rust dependencies for v0.0.2'
+              git push origin HEAD:main
+              if ($LASTEXITCODE -ne 0) { throw 'Failed to publish the generated Rust lockfile.' }
+            }
+          }
+
       - name: Rust validation
         shell: pwsh
         run: cargo check --locked --manifest-path src-tauri/Cargo.toml 2>&1 | Tee-Object -FilePath test-results/cargo-check.log

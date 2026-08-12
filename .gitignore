@@ -8,8 +8,6 @@ test-results/
 !.env.example
 
 src-tauri/target/
-src-tauri/Cargo.lock
-
 *.msi
 *.exe
 *.zip

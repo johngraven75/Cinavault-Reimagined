@@ -55,3 +55,16 @@ test('Tauri produces both Windows installer formats', async () => {
   assert.deepEqual(config.bundle.targets, ['msi', 'nsis']);
   assert.equal(config.bundle.active, true);
 });
+
+test('release identity is synchronized and dependencies are reproducible', async () => {
+  const packageJson = JSON.parse(await readFile(resolve(root, 'package.json'), 'utf8'));
+  const packageLock = JSON.parse(await readFile(resolve(root, 'package-lock.json'), 'utf8'));
+  const tauri = JSON.parse(await readFile(resolve(root, 'src-tauri/tauri.conf.json'), 'utf8'));
+  const cargo = await readFile(resolve(root, 'src-tauri/Cargo.toml'), 'utf8');
+
+  assert.equal(packageJson.version, '0.0.2');
+  assert.equal(packageLock.version, packageJson.version);
+  assert.equal(packageLock.packages[''].version, packageJson.version);
+  assert.equal(tauri.version, packageJson.version);
+  assert.match(cargo, /version = "0\.0\.2"/);
+});

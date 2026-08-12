@@ -1,6 +1,6 @@
-# CinaVault ReImagined v0.0.1
+# CinaVault ReImagined v0.0.2
 
-Initial standalone architectural and visual foundation release.
+Verified standalone architecture and Windows packaging repair release.
 
 ## Highlights
 
@@ -13,6 +13,7 @@ Initial standalone architectural and visual foundation release.
 - Standalone release-gate tests
 - Automated Windows MSI and NSIS packaging
 - Automated GitHub prerelease publication with build evidence
+- Deterministic `npm ci` dependency lock and superseded-run cancellation
 
 ## Status
 

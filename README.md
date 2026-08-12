@@ -4,7 +4,7 @@
 
 CinaVault ReImagined is a standalone Windows media application built with **Tauri 2, Rust, React, TypeScript, and Vite**.
 
-> **Release status:** v0.0.1 is a foundation prerelease. The desktop shell, visual system, feature contract, validation gates, and MSI/NSIS packaging are present. Media-engine capabilities are being migrated incrementally from CinaVault Premium.
+> **Release status:** v0.0.2 is the next verified foundation prerelease. The desktop shell, visual system, feature contract, validation gates, deterministic dependency lock, and MSI/NSIS packaging are present.
 
 ## Highlights
 
@@ -60,6 +60,6 @@ src-tauri/        Rust/Tauri desktop shell and Windows packaging
 
 ## Release process
 
-Every relevant push to `main` runs the complete Windows validation and packaging pipeline. A successful run creates or updates the `cinavault-reimagined-v0.0.1` prerelease and attaches the MSI, NSIS EXE, verified build notes, and test summary.
+Every relevant push to `main` runs the complete Windows validation and packaging pipeline. A successful run creates or updates the `cinavault-reimagined-v0.0.2` prerelease and attaches the MSI, NSIS EXE, verified build notes, and test summary.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and [RELEASE_NOTES.md](RELEASE_NOTES.md) for maintenance and release details.

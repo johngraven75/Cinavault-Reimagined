@@ -64,7 +64,7 @@ export function App() {
       <main>
         <header className="topbar">
           <div className="search glass"><Search size={18} /><input aria-label="Search" placeholder="Search movies, shows, people and collections" /></div>
-          <div className="status-pill"><span /> ReImagined v0.0.1</div>
+          <div className="status-pill"><span /> ReImagined v0.0.2</div>
         </header>
 
         <motion.section className="hero" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65 }}>

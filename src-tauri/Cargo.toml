@@ -1,6 +1,6 @@
 [package]
 name = "cinavault-reimagined"
-version = "0.0.1"
+version = "0.0.2"
 description = "CinaVault ReImagined Windows desktop application"
 authors = ["CinaVault"]
 edition = "2021"

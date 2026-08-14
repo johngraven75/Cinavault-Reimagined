@@ -35,7 +35,7 @@ jobs:
         run: New-Item -ItemType Directory -Force -Path test-results | Out-Null
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: '24'
 

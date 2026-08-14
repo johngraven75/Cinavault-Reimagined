@@ -54,9 +54,9 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           if (Test-Path package-lock.json) {
-            npm ci --no-audit --no-fund 2>&1 | Tee-Object -FilePath test-results/npm-install.log
+            npm ci --no-audit --no-fund --legacy-peer-deps 2>&1 | Tee-Object -FilePath test-results/npm-install.log
           } else {
-            npm install --no-audit --no-fund 2>&1 | Tee-Object -FilePath test-results/npm-install.log
+            npm install --no-audit --no-fund --legacy-peer-deps 2>&1 | Tee-Object -FilePath test-results/npm-install.log
           }
           if ($LASTEXITCODE -ne 0) { throw 'Frontend dependency installation failed.' }
 

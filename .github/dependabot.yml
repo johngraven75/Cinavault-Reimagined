@@ -1,28 +1,22 @@
 version: 2
 updates:
-  - package-ecosystem: npm
-    directory: /
+  - package-ecosystem: "npm"
+    directory: "/"
     schedule:
-      interval: weekly
+      interval: "weekly"
     open-pull-requests-limit: 5
-    labels:
-      - dependencies
-      - maintenance
-
-  - package-ecosystem: cargo
-    directory: /src-tauri
+    groups:
+      security-updates:
+        applies-to: "security-updates"
+        patterns:
+          - "*"
+  - package-ecosystem: "cargo"
+    directory: "/src-tauri"
     schedule:
-      interval: weekly
+      interval: "weekly"
     open-pull-requests-limit: 5
-    labels:
-      - dependencies
-      - maintenance
-
-  - package-ecosystem: github-actions
-    directory: /
-    schedule:
-      interval: weekly
-    open-pull-requests-limit: 5
-    labels:
-      - dependencies
-      - ci
+    groups:
+      security-updates:
+        applies-to: "security-updates"
+        patterns:
+          - "*"
